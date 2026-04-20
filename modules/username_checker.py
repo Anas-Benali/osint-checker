@@ -178,3 +178,20 @@ def check_username(username):
 
     
 
+def check_email_on_platform(email):
+    d = {
+        "spotify" : False,
+        "duolingo" : False
+    }
+    reponse_spotify = requests.get(
+    "https://spclient.wg.spotify.com/signup/public/v1/account", 
+    params={"validate": 1, "email": email})
+
+    reponse_duolingo = requests.get( "https://www.duolingo.com/2017-06-30/users", params={"email": email}, headers={"User-Agent": "Mozilla/5.0"} )
+    if reponse_spotify.json()["status"] == 20:
+        d["spotify"] = True
+
+    if len(reponse_duolingo.json()["users"]) != 0:
+        d["duolingo"] = True
+        
+    return d
