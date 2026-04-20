@@ -107,6 +107,26 @@ def generate_username(mail):
     return res
 
 def check_username(username):
+    """
+    Vérifie l'existence d'un username sur plusieurs plateformes via leurs URLs de profil.
+    Attention : certaines plateformes retournent 200 même si le profil n'existe pas.
+
+    :param username: (str) Le nom d'utilisateur à vérifier
+    :return: (dict) Un dictionnaire contenant :
+             - "username" (str) : le username vérifié
+             - "results" (dict) : un dictionnaire avec le nom de la plateforme comme clé et un booléen comme valeur
+
+    >>> check_username("google")
+    {'username': 'google', 'results': {'github': True, 'instagram': True, ...}}
+
+    >>> check_username("usernamequisurementexistepas999999")
+    {'username': 'usernamequisurementexistepas999999', 'results': {'github': False, ...}}
+
+    >>> check_username(12345)
+    Traceback (most recent call last):
+        ...
+    AssertionError: username doit être un str
+    """
     assert isinstance (username,str),'username doit être un  str'
     d = {
         "username": username,
@@ -179,6 +199,24 @@ def check_username(username):
     
 
 def check_email_on_platform(email):
+    """
+    Vérifie si un email est enregistré sur plusieurs plateformes via leurs APIs publiques.
+
+    :param email: (str) L'adresse email à vérifier
+    :return: (dict) Un dictionnaire avec le nom de la plateforme comme clé et un booléen comme valeur
+
+    >>> check_email_on_platform("email@gmail.com")
+    {'spotify': True, 'duolingo': True, 'firefox': True}
+
+    >>> check_email_on_platform("emailquinexistepas999999@gmail.com")
+    {'spotify': False, 'duolingo': False, 'firefox': False}
+
+    >>> check_email_on_platform(12345)
+    Traceback (most recent call last):
+        ...
+    AssertionError: email doit être un str
+    """
+    assert isinstance (email,str),'email doit être un str'
     d = {
         "spotify" : False,
         "duolingo" : False,
@@ -203,6 +241,25 @@ def check_email_on_platform(email):
     return d
 
 def check_email_username(email):
+    """
+    Combine generate_username(), check_username() et check_email_on_platform()
+    pour retourner une analyse complète de l'exposition d'un email.
+
+    :param email: (str) L'adresse email à analyser
+    :return: (dict) Un dictionnaire contenant :
+             - "email" (str) : l'email analysé
+             - "platform_email_check" (dict) : résultats de check_email_on_platform()
+             - "usernames_checked" (list) : liste des résultats de check_username() pour chaque variante
+
+    >>> check_email_username("john.doe@gmail.com")
+    {'email': 'john.doe@gmail.com', 'platform_email_check': {...}, 'usernames_checked': [...]}
+
+    >>> check_email_username(12345)
+    Traceback (most recent call last):
+        ...
+    AssertionError: email doit être un str
+    """
+    assert isinstance (email,str),'email doit être un str'
     d = {
         "email" : email,
         "platform_email_check" :None,
