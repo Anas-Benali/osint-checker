@@ -181,17 +181,36 @@ def check_username(username):
 def check_email_on_platform(email):
     d = {
         "spotify" : False,
-        "duolingo" : False
+        "duolingo" : False,
+        "firefox" : False
     }
     reponse_spotify = requests.get(
     "https://spclient.wg.spotify.com/signup/public/v1/account", 
     params={"validate": 1, "email": email})
 
     reponse_duolingo = requests.get( "https://www.duolingo.com/2017-06-30/users", params={"email": email}, headers={"User-Agent": "Mozilla/5.0"} )
+
+    reponse_firefox = requests.post("https://api.accounts.firefox.com/v1/account/status",json={"email": email})
     if reponse_spotify.json()["status"] == 20:
         d["spotify"] = True
 
     if len(reponse_duolingo.json()["users"]) != 0:
         d["duolingo"] = True
-        
+    
+    if reponse_firefox.json()["exists"]:
+        d["firefox"] = True
+
+    return d
+
+def check_email_username(email):
+    d = {
+        "email" : email,
+        "platform_email_check" :None,
+        "usernames_checked" : None
+    }
+    temp = []
+    for elem in generate_username(email):
+        temp.append(check_username(elem))
+    d["platform_email_check"] = check_email_on_platform(email)
+    d["usernames_checked"] = temp
     return d
