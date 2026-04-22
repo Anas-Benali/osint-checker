@@ -18,6 +18,34 @@ FREE_PROVIDERS = [
     "throwam.com", "sharklasers.com", "trashmail.com"
 ]
 def lookup_domain(domain):
+    """
+    Récupère les informations publiques sur un nom de domaine via WHOIS et DNS.
+
+    :param domain: (str) Le nom de domaine à analyser (ex: "github.com")
+    :return: (dict) Un dictionnaire contenant :
+             - "domain" (str) : le domaine analysé
+             - "registrar" (str | None) : l'organisme qui a enregistré le domaine
+             - "creation_date" (str | None) : date de création au format JJ/MM/AAAA
+             - "expiration_date" (str | None) : date d'expiration au format JJ/MM/AAAA
+             - "country" (str | None) : pays d'enregistrement
+             - "ip" (str | None) : adresse IP associée au domaine
+             - "is_free_provider" (bool) : True si c'est un provider email gratuit connu
+
+    >>> lookup_domain("github.com")
+    {'domain': 'github.com', 'registrar': 'MarkMonitor, Inc.', 'creation_date': '09/10/2007', 'expiration_date': '09/10/2026', 'country': 'US', 'ip': '140.82.121.4', 'is_free_provider': False}
+
+    >>> lookup_domain("gmail.com")
+    {'domain': 'gmail.com', 'registrar': 'MarkMonitor, Inc.', 'creation_date': '13/08/1995', 'expiration_date': '12/08/2026', 'country': 'US', 'ip': '142.251.39.197', 'is_free_provider': True}
+
+    >>> lookup_domain("domainequinexistepas999.com")
+    {'domain': 'domainequinexistepas999.com', 'registrar': None, 'creation_date': None, 'expiration_date': None, 'country': None, 'ip': None, 'is_free_provider': False}
+
+    >>> lookup_domain(12345)
+    Traceback (most recent call last):
+        ...
+    AssertionError: domain doit être un str
+    """
+    assert isinstance(domain,str), 'domain doit être un str'
     d = {
         "domain" : domain,
         "registrar" : None,
